@@ -19,6 +19,7 @@
     --s-aopen: #4C70A0;   /* A·K线开 · 蓝灰 */
     --s-noyang:#A6612F;   /* 删连阳 · 赤陶 */
     --s-novol: #8A5B7C;   /* 删放量 · 梅紫 */
+    --s-minervini:#2F7A6F;/* Minervini · 窑变青 */
     --bench:   #ADA495;   /* 基准 · 暖灰 */
     --up:      #55764A;
     --down:    #A65847;
@@ -131,6 +132,46 @@
   td.code { font-weight: 600; letter-spacing: .04em; }
   .empty { color: var(--muted); font-size: 12.5px; padding: 14px 2px; }
 
+  /* ---- 每日盈亏日历 ---- */
+  .cal-switch { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 16px; }
+  .cal-switch button {
+    border: 1px solid var(--hairline); background: transparent; color: var(--ink-2);
+    font-size: 11.5px; padding: 5px 11px; border-radius: 5px; cursor: pointer;
+    font-family: inherit; letter-spacing: .05em; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .cal-switch button i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .cal-switch button.active { background: var(--paper); border-color: var(--ink-2); color: var(--ink); font-weight: 600; }
+  .cal-months { display: flex; flex-wrap: wrap; gap: 22px; }
+  .cal-month { flex: 0 0 auto; }
+  .cal-title { font-size: 11.5px; color: var(--ink-2); letter-spacing: .12em; margin-bottom: 7px; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 66px); gap: 3px; }
+  .cal-grid .wd { font-size: 9.5px; color: var(--muted); text-align: center; padding-bottom: 2px; }
+  .cal-cell {
+    width: 66px; height: 50px; border-radius: 3px; background: var(--grid);
+    display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start;
+    padding: 3px 4px; box-sizing: border-box; overflow: hidden; cursor: default;
+  }
+  .cal-cell.empty { background: transparent; }
+  .cal-cell .d { font-size: 9px; color: var(--muted); line-height: 1.15; }
+  .cal-cell .v { font-size: 11px; font-weight: 600; line-height: 1.3; letter-spacing: -.02em; }
+  .cal-cell .p { font-size: 9.5px; line-height: 1.15; opacity: .92; }
+  .cal-cell.has { color: #fff; }
+  .cal-cell.has .d { color: rgba(255,255,255,.72); }
+
+  /* 手机端：格子缩小，避免横向溢出 */
+  @media (max-width: 560px) {
+    .cal-grid { grid-template-columns: repeat(7, 44px); gap: 2px; }
+    .cal-cell { width: 44px; height: 42px; padding: 2px 3px; }
+    .cal-cell .d { font-size: 8px; }
+    .cal-cell .v { font-size: 9px; }
+    .cal-cell .p { font-size: 8px; }
+    .cal-months { gap: 14px; }
+  }
+  .cal-legend { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--muted); margin-top: 14px; }
+  .cal-legend i { width: 15px; height: 13px; border-radius: 2px; display: inline-block; }
+  .cal-sum { font-size: 12px; color: var(--ink-2); margin-top: 10px; }
+  .cal-sum b { color: var(--ink); }
+
   footer {
     margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--hairline);
     display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
@@ -189,6 +230,15 @@
   </div>
 
   <div class="card">
+    <h2 id="cal-h2"></h2>
+    <p class="sub" id="cal-sub"></p>
+    <div class="cal-switch" id="cal-switch"></div>
+    <div class="cal-months" id="cal-months"></div>
+    <div class="cal-sum" id="cal-sum"></div>
+    <div class="cal-legend" id="cal-legend"></div>
+  </div>
+
+  <div class="card">
     <h2 id="pos-h2"></h2>
     <p class="sub" id="pos-sub"></p>
     <div id="positions"></div>
@@ -207,8 +257,8 @@
 </div>
 
 <script>
-const DATA = {"generated": "2026-07-19 22:00", "initial": 20000.0, "priced": true, "dates": ["2026-07-13", "2026-07-14", "2026-07-15", "2026-07-16", "2026-07-17", "2026-07-19"], "bench": [0.0, 1.117, 0.843, -0.815, -2.306, -2.306], "strategies": [{"key": "main", "name": "主策略", "note": "波段突破 · 完整规则", "equity": 19856.71, "ret": -0.72, "dayChg": 0.0, "cash": 1300.23, "frozen": 1280.4, "mv": 18556.48, "fees": 24.54, "realized": -250.26, "upnl": 126.17, "lastRun": "2026-07-19 20:00:15", "curve": [19997.15, 20137.5, 20231.18, 19973.17, 19856.03, 19856.03], "positions": [{"code": "AAPL", "qty": 11, "avg": 313.84, "px": 333.74, "mv": 3671.14, "upnl": 218.9, "upnlPct": 6.34, "stop": 297.5329, "stopDist": 10.85, "entry": "2026-07-14", "days": 5}, {"code": "BAC", "qty": 58, "avg": 59.26, "px": 61.27, "mv": 3553.66, "upnl": 116.58, "upnlPct": 3.39, "stop": 56.611442857142855, "stopDist": 7.6, "entry": "2026-07-14", "days": 5}, {"code": "RF", "qty": 112, "avg": 31.07, "px": 31.65, "mv": 3544.8, "upnl": 64.96, "upnlPct": 1.87, "stop": 29.376514285714286, "stopDist": 7.18, "entry": "2026-07-11", "days": 8}, {"code": "ABNB", "qty": 22, "avg": 148.56, "px": 145.98, "mv": 3211.56, "upnl": -56.76, "upnlPct": -1.74, "stop": 137.9962, "stopDist": 5.47, "entry": "2026-07-16", "days": 3}, {"code": "AEP", "qty": 13, "avg": 134.94, "px": 132.14, "mv": 1717.82, "upnl": -36.4, "upnlPct": -2.07, "stop": 129.238867, "stopDist": 2.2, "entry": "2026-07-15", "days": 4}, {"code": "BTSG", "qty": 23, "avg": 68.2, "px": 70.69, "mv": 1625.87, "upnl": 57.27, "upnlPct": 3.65, "stop": 62.39715714285713, "stopDist": 11.73, "entry": "2026-07-17", "days": 2}, {"code": "BB", "qty": 137, "avg": 10.73, "px": 8.99, "mv": 1231.63, "upnl": -238.38, "upnlPct": -16.22, "stop": 8.325342857142857, "stopDist": 7.39, "entry": "2026-07-14", "days": 5}], "trades": [{"date": "2026-07-17", "code": "BTSG", "action": "波段突破_买入底仓", "qty": 23, "price": 68.2, "pnl": -2.32, "note": "挂单补成交（次日确认）"}, {"date": "2026-07-17", "code": "BB", "action": "波段分步减仓", "qty": 136, "price": 9.15, "pnl": -217.25, "note": "【中轴减仓】跌破 EMA20 生命线（含ATR缓冲）｜挂单补成交（成交确认后记账）"}, {"date": "2026-07-16", "code": "AEP", "action": "波段分步减仓", "qty": 12, "price": 132.38, "pnl": -33.01, "note": "【中轴减仓】跌破 EMA20 生命线（含ATR缓冲）｜挂单补成交（成交确认后记账）"}, {"date": "2026-07-16", "code": "ABNB", "action": "波段突破_买入底仓", "qty": 22, "price": 148.56, "pnl": -2.31, "note": "挂单补成交（次日确认）"}, {"date": "2026-07-15", "code": "AEP", "action": "波段突破_买入底仓", "qty": 25, "price": 134.94, "pnl": -2.33, "note": "初始建仓入场"}, {"date": "2026-07-14", "code": "BB", "action": "波段突破_买入底仓", "qty": 273, "price": 10.73, "pnl": -4.61, "note": "挂单补成交（次日确认）"}, {"date": "2026-07-14", "code": "BAC", "action": "波段突破_买入底仓", "qty": 58, "price": 59.26, "pnl": -2.53, "note": "挂单补成交（次日确认）"}, {"date": "2026-07-14", "code": "AAPL", "action": "波段突破_买入底仓", "qty": 11, "price": 313.84, "pnl": -2.25, "note": "初始建仓入场"}, {"date": "2026-07-11", "code": "RF", "action": "波段突破_买入底仓", "qty": 112, "price": 31.07, "pnl": -2.85, "note": "挂单补成交（次日确认）"}], "sharpe": -3.07, "sortino": -3.51, "calmar": null, "maxDD": 1.85, "winRate": 0.0, "profitFactor": 0.0, "nExits": 2, "days": 6}, {"key": "aopen", "name": "A·K线开", "note": "对照组 · K线确认开仓", "equity": 20316.82, "ret": 1.58, "dayChg": 0.0, "cash": 35.28, "frozen": 0.0, "mv": 20281.54, "fees": 14.88, "realized": 0.0, "upnl": 331.7, "lastRun": "2026-07-19 20:30:10", "curve": [19914.77, 19836.56, 19865.12, 20291.82, 20316.82, 20316.82], "positions": [{"code": "AAPL", "qty": 11, "avg": 317.31, "px": 333.74, "mv": 3671.14, "upnl": 180.73, "upnlPct": 5.18, "stop": 297.5329, "stopDist": 10.85, "entry": "2026-07-14", "days": 5}, {"code": "RF", "qty": 112, "avg": 31.02, "px": 31.65, "mv": 3544.8, "upnl": 70.56, "upnlPct": 2.03, "stop": 29.376514285714286, "stopDist": 7.18, "entry": "2026-07-11", "days": 8}, {"code": "NAVN", "qty": 133, "avg": 26.13, "px": 25.96, "mv": 3452.68, "upnl": -22.61, "upnlPct": -0.65, "stop": 22.458357142857142, "stopDist": 13.49, "entry": "2026-07-14", "days": 5}, {"code": "SN", "qty": 22, "avg": 152.65, "px": 154.53, "mv": 3399.66, "upnl": 41.36, "upnlPct": 1.23, "stop": 138.80801428571428, "stopDist": 10.17, "entry": "2026-07-11", "days": 8}, {"code": "GD", "qty": 9, "avg": 375.06, "px": 368.58, "mv": 3317.22, "upnl": -58.32, "upnlPct": -1.73, "stop": 355.746984613, "stopDist": 3.48, "entry": "2026-07-11", "days": 8}, {"code": "PSX", "qty": 14, "avg": 198.29, "px": 206.86, "mv": 2896.04, "upnl": 119.98, "upnlPct": 4.32, "stop": 179.3282, "stopDist": 13.31, "entry": "2026-07-14", "days": 5}], "trades": [{"date": "2026-07-14", "code": "PSX", "action": "波段突破_买入底仓", "qty": 14, "price": 198.29, "pnl": -2.26, "note": "初始建仓入场"}, {"date": "2026-07-14", "code": "NAVN", "action": "波段突破_买入底仓", "qty": 133, "price": 26.13, "pnl": -2.98, "note": "初始建仓入场"}, {"date": "2026-07-14", "code": "AAPL", "action": "波段突破_买入底仓", "qty": 11, "price": 317.31, "pnl": -2.25, "note": "初始建仓入场"}, {"date": "2026-07-11", "code": "RF", "action": "波段突破_买入底仓", "qty": 112, "price": 31.02, "pnl": -2.85, "note": "初始建仓入场"}, {"date": "2026-07-11", "code": "SN", "action": "波段突破_买入底仓", "qty": 22, "price": 152.65, "pnl": -2.31, "note": "初始建仓入场"}, {"date": "2026-07-11", "code": "GD", "action": "波段突破_买入底仓", "qty": 9, "price": 375.06, "pnl": -2.23, "note": "初始建仓入场"}], "sharpe": 7.19, "sortino": 36.56, "calmar": null, "maxDD": 0.39, "winRate": null, "profitFactor": null, "nExits": 0, "days": 6}, {"key": "noyang", "name": "删连阳", "note": "对照组 · 删除连阳过滤", "equity": 20230.93, "ret": 1.15, "dayChg": 0.0, "cash": 56.38, "frozen": 0.0, "mv": 20174.55, "fees": 18.94, "realized": -31.57, "upnl": 279.15, "lastRun": "2026-07-18 16:13:06", "curve": [20000.0, 20000.0, 20126.15, 20309.8, 20230.93, 20230.93], "positions": [{"code": "ABBV", "qty": 14, "avg": 243.04999997, "px": 254.49, "mv": 3562.86, "upnl": 160.16, "upnlPct": 4.71, "stop": 227.95030630500003, "stopDist": 10.43, "entry": "2026-07-15", "days": 4}, {"code": "CSX", "qty": 70, "avg": 49.92, "px": 50.75, "mv": 3552.5, "upnl": 58.1, "upnlPct": 1.66, "stop": 47.95871428571428, "stopDist": 5.5, "entry": "2026-07-15", "days": 4}, {"code": "BAC", "qty": 57, "avg": 60.62, "px": 61.27, "mv": 3492.39, "upnl": 37.05, "upnlPct": 1.07, "stop": 56.1893, "stopDist": 8.29, "entry": "2026-07-15", "days": 4}, {"code": "BNY", "qty": 22, "avg": 154.5, "px": 157.13, "mv": 3456.86, "upnl": 57.86, "upnlPct": 1.7, "stop": 143.15942857142858, "stopDist": 8.89, "entry": "2026-07-15", "days": 4}, {"code": "CVS", "qty": 26, "avg": 106.18, "px": 107.47, "mv": 2794.22, "upnl": 33.54, "upnlPct": 1.21, "stop": 100.3005, "stopDist": 6.67, "entry": "2026-07-15", "days": 4}, {"code": "AEP", "qty": 13, "avg": 134.94, "px": 132.14, "mv": 1717.82, "upnl": -36.4, "upnlPct": -2.07, "stop": 129.238867, "stopDist": 2.2, "entry": "2026-07-15", "days": 4}, {"code": "ETSY", "qty": 19, "avg": 85.74, "px": 84.1, "mv": 1597.9, "upnl": -31.16, "upnlPct": -1.91, "stop": 75.45870000000001, "stopDist": 10.28, "entry": "2026-07-16", "days": 3}], "trades": [{"date": "2026-07-16", "code": "ETSY", "action": "波段突破_买入底仓", "qty": 19, "price": 85.74, "pnl": -2.29, "note": "初始建仓入场"}, {"date": "2026-07-16", "code": "AEP", "action": "波段分步减仓", "qty": 12, "price": 132.5, "pnl": -31.57, "note": "【中轴减仓】跌破 EMA20 生命线（含ATR缓冲）"}, {"date": "2026-07-15", "code": "CVS", "action": "波段突破_买入底仓", "qty": 26, "price": 106.18, "pnl": -2.34, "note": "初始建仓入场"}, {"date": "2026-07-15", "code": "CSX", "action": "波段突破_买入底仓", "qty": 70, "price": 49.92, "pnl": -2.6, "note": "初始建仓入场"}, {"date": "2026-07-15", "code": "BNY", "action": "波段突破_买入底仓", "qty": 22, "price": 154.5, "pnl": -2.31, "note": "初始建仓入场"}, {"date": "2026-07-15", "code": "BAC", "action": "波段突破_买入底仓", "qty": 57, "price": 60.62, "pnl": -2.52, "note": "初始建仓入场"}, {"date": "2026-07-15", "code": "AEP", "action": "波段突破_买入底仓", "qty": 25, "price": 134.94, "pnl": -2.33, "note": "初始建仓入场"}, {"date": "2026-07-15", "code": "ABBV", "action": "波段突破_买入底仓", "qty": 14, "price": 243.05, "pnl": -2.26, "note": "初始建仓入场"}], "sharpe": 7.77, "sortino": 21.11, "calmar": null, "maxDD": 0.39, "winRate": 0.0, "profitFactor": 0.0, "nExits": 1, "days": 6}, {"key": "novol", "name": "删放量", "note": "对照组 · 删除放量过滤", "equity": 19982.0, "ret": -0.09, "dayChg": 0.0, "cash": 21.37, "frozen": 0.0, "mv": 19960.63, "fees": 14.28, "realized": 0.0, "upnl": -3.72, "lastRun": "2026-07-19 11:30:08", "curve": [20000.0, 20000.0, 20000.0, 20000.0, 19982.0, 19982.0], "positions": [{"code": "BMY", "qty": 57, "avg": 60.51, "px": 60.74, "mv": 3462.18, "upnl": 13.11, "upnlPct": 0.38, "stop": 55.16321475857143, "stopDist": 9.18, "entry": "2026-07-17", "days": 2}, {"code": "AMZN", "qty": 14, "avg": 249.89, "px": 247.23, "mv": 3461.22, "upnl": -37.24, "upnlPct": -1.06, "stop": 232.73907142857144, "stopDist": 5.86, "entry": "2026-07-17", "days": 2}, {"code": "BAC", "qty": 56, "avg": 61.49, "px": 61.27, "mv": 3431.12, "upnl": -12.32, "upnlPct": -0.36, "stop": 58.50787142857143, "stopDist": 4.51, "entry": "2026-07-17", "days": 2}, {"code": "AAPL", "qty": 10, "avg": 333.26, "px": 333.74, "mv": 3337.4, "upnl": 4.8, "upnlPct": 0.14, "stop": 309.4557571428572, "stopDist": 7.28, "entry": "2026-07-17", "days": 2}, {"code": "BNY", "qty": 21, "avg": 160.86, "px": 157.13, "mv": 3299.73, "upnl": -78.33, "upnlPct": -2.32, "stop": 150.478, "stopDist": 4.23, "entry": "2026-07-17", "days": 2}, {"code": "BTSG", "qty": 42, "avg": 68.16, "px": 70.69, "mv": 2968.98, "upnl": 106.26, "upnlPct": 3.71, "stop": 62.39715714285713, "stopDist": 11.73, "entry": "2026-07-17", "days": 2}], "trades": [{"date": "2026-07-17", "code": "BTSG", "action": "波段突破_买入底仓", "qty": 42, "price": 68.16, "pnl": -2.43, "note": "初始建仓入场"}, {"date": "2026-07-17", "code": "BNY", "action": "波段突破_买入底仓", "qty": 21, "price": 160.86, "pnl": -2.31, "note": "初始建仓入场"}, {"date": "2026-07-17", "code": "BMY", "action": "波段突破_买入底仓", "qty": 57, "price": 60.51, "pnl": -2.52, "note": "初始建仓入场"}, {"date": "2026-07-17", "code": "BAC", "action": "波段突破_买入底仓", "qty": 56, "price": 61.49, "pnl": -2.52, "note": "初始建仓入场"}, {"date": "2026-07-17", "code": "AMZN", "action": "波段突破_买入底仓", "qty": 14, "price": 249.89, "pnl": -2.26, "note": "初始建仓入场"}, {"date": "2026-07-17", "code": "AAPL", "action": "波段突破_买入底仓", "qty": 10, "price": 333.26, "pnl": -2.24, "note": "初始建仓入场"}], "sharpe": -7.94, "sortino": -7.1, "calmar": null, "maxDD": 0.09, "winRate": null, "profitFactor": null, "nExits": 0, "days": 6}]};
-const COLORS = { main: "var(--s-main)", aopen: "var(--s-aopen)", noyang: "var(--s-noyang)", novol: "var(--s-novol)" };
+const DATA = {"generated": "2026-07-20 20:02", "initial": 20000.0, "priced": true, "dates": ["2026-07-13", "2026-07-14", "2026-07-15", "2026-07-16", "2026-07-17", "2026-07-20"], "bench": [0.0, 1.117, 0.843, -0.815, -2.306, -2.306], "strategies": [{"key": "main", "name": "主策略", "note": "波段突破 · 完整规则", "equity": 19856.71, "ret": -0.72, "dayChg": 0.0, "cash": 1300.23, "frozen": 0.0, "mv": 18556.48, "fees": 24.54, "realized": -250.26, "upnl": 126.17, "lastRun": "2026-07-20 20:00:09", "curve": [19997.15, 20137.5, 20231.18, 19973.17, 19856.03, 19856.03], "positions": [{"code": "AAPL", "qty": 11, "avg": 313.84, "px": 333.74, "mv": 3671.14, "upnl": 218.9, "upnlPct": 6.34, "stop": 297.5329, "stopDist": 10.85, "entry": "2026-07-14", "days": 6}, {"code": "BAC", "qty": 58, "avg": 59.26, "px": 61.27, "mv": 3553.66, "upnl": 116.58, "upnlPct": 3.39, "stop": 56.611442857142855, "stopDist": 7.6, "entry": "2026-07-14", "days": 6}, {"code": "RF", "qty": 112, "avg": 31.07, "px": 31.65, "mv": 3544.8, "upnl": 64.96, "upnlPct": 1.87, "stop": 29.376514285714286, "stopDist": 7.18, "entry": "2026-07-11", "days": 9}, {"code": "ABNB", "qty": 22, "avg": 148.56, "px": 145.98, "mv": 3211.56, "upnl": -56.76, "upnlPct": -1.74, "stop": 137.9962, "stopDist": 5.47, "entry": "2026-07-16", "days": 4}, {"code": "AEP", "qty": 13, "avg": 134.94, "px": 132.14, "mv": 1717.82, "upnl": -36.4, "upnlPct": -2.07, "stop": 129.238867, "stopDist": 2.2, "entry": "2026-07-15", "days": 5}, {"code": "BTSG", "qty": 23, "avg": 68.2, "px": 70.69, "mv": 1625.87, "upnl": 57.27, "upnlPct": 3.65, "stop": 62.39715714285713, "stopDist": 11.73, "entry": "2026-07-17", "days": 3}, {"code": "BB", "qty": 137, "avg": 10.73, "px": 8.99, "mv": 1231.63, "upnl": -238.38, "upnlPct": -16.22, "stop": 8.325342857142857, "stopDist": 7.39, "entry": "2026-07-14", "days": 6}], "trades": [{"date": "2026-07-17", "code": "BTSG", "action": "波段突破_买入底仓", "qty": 23, "price": 68.2, "pnl": -2.32, "note": "挂单补成交（次日确认）"}, {"date": "2026-07-17", "code": "BB", "action": "波段分步减仓", "qty": 136, "price": 9.15, "pnl": -217.25, "note": "【中轴减仓】跌破 EMA20 生命线（含ATR缓冲）｜挂单补成交（成交确认后记账）"}, {"date": "2026-07-16", "code": "AEP", "action": "波段分步减仓", "qty": 12, "price": 132.38, "pnl": -33.01, "note": "【中轴减仓】跌破 EMA20 生命线（含ATR缓冲）｜挂单补成交（成交确认后记账）"}, {"date": "2026-07-16", "code": "ABNB", "action": "波段突破_买入底仓", "qty": 22, "price": 148.56, "pnl": -2.31, "note": "挂单补成交（次日确认）"}, {"date": "2026-07-15", "code": "AEP", "action": "波段突破_买入底仓", "qty": 25, "price": 134.94, "pnl": -2.33, "note": "初始建仓入场"}, {"date": "2026-07-14", "code": "BB", "action": "波段突破_买入底仓", "qty": 273, "price": 10.73, "pnl": -4.61, "note": "挂单补成交（次日确认）"}, {"date": "2026-07-14", "code": "BAC", "action": "波段突破_买入底仓", "qty": 58, "price": 59.26, "pnl": -2.53, "note": "挂单补成交（次日确认）"}, {"date": "2026-07-14", "code": "AAPL", "action": "波段突破_买入底仓", "qty": 11, "price": 313.84, "pnl": -2.25, "note": "初始建仓入场"}, {"date": "2026-07-11", "code": "RF", "action": "波段突破_买入底仓", "qty": 112, "price": 31.07, "pnl": -2.85, "note": "挂单补成交（次日确认）"}], "sharpe": -3.07, "sortino": -3.51, "calmar": null, "maxDD": 1.85, "winRate": 0.0, "profitFactor": 0.0, "nExits": 2, "days": 6}, {"key": "aopen", "name": "A·K线开", "note": "对照组 · K线确认开仓", "equity": 20316.82, "ret": 1.58, "dayChg": 0.0, "cash": 35.28, "frozen": 0.0, "mv": 20281.54, "fees": 14.88, "realized": 0.0, "upnl": 331.7, "lastRun": "2026-07-19 20:30:10", "curve": [19914.77, 19836.56, 19865.12, 20291.82, 20316.82, 20316.82], "positions": [{"code": "AAPL", "qty": 11, "avg": 317.31, "px": 333.74, "mv": 3671.14, "upnl": 180.73, "upnlPct": 5.18, "stop": 297.5329, "stopDist": 10.85, "entry": "2026-07-14", "days": 6}, {"code": "RF", "qty": 112, "avg": 31.02, "px": 31.65, "mv": 3544.8, "upnl": 70.56, "upnlPct": 2.03, "stop": 29.376514285714286, "stopDist": 7.18, "entry": "2026-07-11", "days": 9}, {"code": "NAVN", "qty": 133, "avg": 26.13, "px": 25.96, "mv": 3452.68, "upnl": -22.61, "upnlPct": -0.65, "stop": 22.458357142857142, "stopDist": 13.49, "entry": "2026-07-14", "days": 6}, {"code": "SN", "qty": 22, "avg": 152.65, "px": 154.53, "mv": 3399.66, "upnl": 41.36, "upnlPct": 1.23, "stop": 138.80801428571428, "stopDist": 10.17, "entry": "2026-07-11", "days": 9}, {"code": "GD", "qty": 9, "avg": 375.06, "px": 368.58, "mv": 3317.22, "upnl": -58.32, "upnlPct": -1.73, "stop": 355.746984613, "stopDist": 3.48, "entry": "2026-07-11", "days": 9}, {"code": "PSX", "qty": 14, "avg": 198.29, "px": 206.86, "mv": 2896.04, "upnl": 119.98, "upnlPct": 4.32, "stop": 179.3282, "stopDist": 13.31, "entry": "2026-07-14", "days": 6}], "trades": [{"date": "2026-07-14", "code": "PSX", "action": "波段突破_买入底仓", "qty": 14, "price": 198.29, "pnl": -2.26, "note": "初始建仓入场"}, {"date": "2026-07-14", "code": "NAVN", "action": "波段突破_买入底仓", "qty": 133, "price": 26.13, "pnl": -2.98, "note": "初始建仓入场"}, {"date": "2026-07-14", "code": "AAPL", "action": "波段突破_买入底仓", "qty": 11, "price": 317.31, "pnl": -2.25, "note": "初始建仓入场"}, {"date": "2026-07-11", "code": "RF", "action": "波段突破_买入底仓", "qty": 112, "price": 31.02, "pnl": -2.85, "note": "初始建仓入场"}, {"date": "2026-07-11", "code": "SN", "action": "波段突破_买入底仓", "qty": 22, "price": 152.65, "pnl": -2.31, "note": "初始建仓入场"}, {"date": "2026-07-11", "code": "GD", "action": "波段突破_买入底仓", "qty": 9, "price": 375.06, "pnl": -2.23, "note": "初始建仓入场"}], "sharpe": 7.19, "sortino": 36.56, "calmar": null, "maxDD": 0.39, "winRate": null, "profitFactor": null, "nExits": 0, "days": 6}, {"key": "noyang", "name": "删连阳", "note": "对照组 · 删除连阳过滤", "equity": 20230.93, "ret": 1.15, "dayChg": 0.0, "cash": 56.38, "frozen": 0.0, "mv": 20174.55, "fees": 18.94, "realized": -31.57, "upnl": 279.15, "lastRun": "2026-07-20 10:10:12", "curve": [20000.0, 20000.0, 20126.15, 20309.8, 20230.93, 20230.93], "positions": [{"code": "ABBV", "qty": 14, "avg": 243.04999997, "px": 254.49, "mv": 3562.86, "upnl": 160.16, "upnlPct": 4.71, "stop": 227.95030630500003, "stopDist": 10.43, "entry": "2026-07-15", "days": 5}, {"code": "CSX", "qty": 70, "avg": 49.92, "px": 50.75, "mv": 3552.5, "upnl": 58.1, "upnlPct": 1.66, "stop": 47.95871428571428, "stopDist": 5.5, "entry": "2026-07-15", "days": 5}, {"code": "BAC", "qty": 57, "avg": 60.62, "px": 61.27, "mv": 3492.39, "upnl": 37.05, "upnlPct": 1.07, "stop": 56.1893, "stopDist": 8.29, "entry": "2026-07-15", "days": 5}, {"code": "BNY", "qty": 22, "avg": 154.5, "px": 157.13, "mv": 3456.86, "upnl": 57.86, "upnlPct": 1.7, "stop": 143.15942857142858, "stopDist": 8.89, "entry": "2026-07-15", "days": 5}, {"code": "CVS", "qty": 26, "avg": 106.18, "px": 107.47, "mv": 2794.22, "upnl": 33.54, "upnlPct": 1.21, "stop": 100.3005, "stopDist": 6.67, "entry": "2026-07-15", "days": 5}, {"code": "AEP", "qty": 13, "avg": 134.94, "px": 132.14, "mv": 1717.82, "upnl": -36.4, "upnlPct": -2.07, "stop": 129.238867, "stopDist": 2.2, "entry": "2026-07-15", "days": 5}, {"code": "ETSY", "qty": 19, "avg": 85.74, "px": 84.1, "mv": 1597.9, "upnl": -31.16, "upnlPct": -1.91, "stop": 75.45870000000001, "stopDist": 10.28, "entry": "2026-07-16", "days": 4}], "trades": [{"date": "2026-07-16", "code": "ETSY", "action": "波段突破_买入底仓", "qty": 19, "price": 85.74, "pnl": -2.29, "note": "初始建仓入场"}, {"date": "2026-07-16", "code": "AEP", "action": "波段分步减仓", "qty": 12, "price": 132.5, "pnl": -31.57, "note": "【中轴减仓】跌破 EMA20 生命线（含ATR缓冲）"}, {"date": "2026-07-15", "code": "CVS", "action": "波段突破_买入底仓", "qty": 26, "price": 106.18, "pnl": -2.34, "note": "初始建仓入场"}, {"date": "2026-07-15", "code": "CSX", "action": "波段突破_买入底仓", "qty": 70, "price": 49.92, "pnl": -2.6, "note": "初始建仓入场"}, {"date": "2026-07-15", "code": "BNY", "action": "波段突破_买入底仓", "qty": 22, "price": 154.5, "pnl": -2.31, "note": "初始建仓入场"}, {"date": "2026-07-15", "code": "BAC", "action": "波段突破_买入底仓", "qty": 57, "price": 60.62, "pnl": -2.52, "note": "初始建仓入场"}, {"date": "2026-07-15", "code": "AEP", "action": "波段突破_买入底仓", "qty": 25, "price": 134.94, "pnl": -2.33, "note": "初始建仓入场"}, {"date": "2026-07-15", "code": "ABBV", "action": "波段突破_买入底仓", "qty": 14, "price": 243.05, "pnl": -2.26, "note": "初始建仓入场"}], "sharpe": 7.77, "sortino": 21.11, "calmar": null, "maxDD": 0.39, "winRate": 0.0, "profitFactor": 0.0, "nExits": 1, "days": 6}, {"key": "novol", "name": "删放量", "note": "对照组 · 删除放量过滤", "equity": 19982.0, "ret": -0.09, "dayChg": 0.0, "cash": 21.37, "frozen": 0.0, "mv": 19960.63, "fees": 14.28, "realized": 0.0, "upnl": -3.72, "lastRun": "2026-07-20 11:30:13", "curve": [20000.0, 20000.0, 20000.0, 20000.0, 19982.0, 19982.0], "positions": [{"code": "BMY", "qty": 57, "avg": 60.51, "px": 60.74, "mv": 3462.18, "upnl": 13.11, "upnlPct": 0.38, "stop": 55.16321475857143, "stopDist": 9.18, "entry": "2026-07-17", "days": 3}, {"code": "AMZN", "qty": 14, "avg": 249.89, "px": 247.23, "mv": 3461.22, "upnl": -37.24, "upnlPct": -1.06, "stop": 232.73907142857144, "stopDist": 5.86, "entry": "2026-07-17", "days": 3}, {"code": "BAC", "qty": 56, "avg": 61.49, "px": 61.27, "mv": 3431.12, "upnl": -12.32, "upnlPct": -0.36, "stop": 58.50787142857143, "stopDist": 4.51, "entry": "2026-07-17", "days": 3}, {"code": "AAPL", "qty": 10, "avg": 333.26, "px": 333.74, "mv": 3337.4, "upnl": 4.8, "upnlPct": 0.14, "stop": 309.4557571428572, "stopDist": 7.28, "entry": "2026-07-17", "days": 3}, {"code": "BNY", "qty": 21, "avg": 160.86, "px": 157.13, "mv": 3299.73, "upnl": -78.33, "upnlPct": -2.32, "stop": 150.478, "stopDist": 4.23, "entry": "2026-07-17", "days": 3}, {"code": "BTSG", "qty": 42, "avg": 68.16, "px": 70.69, "mv": 2968.98, "upnl": 106.26, "upnlPct": 3.71, "stop": 62.39715714285713, "stopDist": 11.73, "entry": "2026-07-17", "days": 3}], "trades": [{"date": "2026-07-17", "code": "BTSG", "action": "波段突破_买入底仓", "qty": 42, "price": 68.16, "pnl": -2.43, "note": "初始建仓入场"}, {"date": "2026-07-17", "code": "BNY", "action": "波段突破_买入底仓", "qty": 21, "price": 160.86, "pnl": -2.31, "note": "初始建仓入场"}, {"date": "2026-07-17", "code": "BMY", "action": "波段突破_买入底仓", "qty": 57, "price": 60.51, "pnl": -2.52, "note": "初始建仓入场"}, {"date": "2026-07-17", "code": "BAC", "action": "波段突破_买入底仓", "qty": 56, "price": 61.49, "pnl": -2.52, "note": "初始建仓入场"}, {"date": "2026-07-17", "code": "AMZN", "action": "波段突破_买入底仓", "qty": 14, "price": 249.89, "pnl": -2.26, "note": "初始建仓入场"}, {"date": "2026-07-17", "code": "AAPL", "action": "波段突破_买入底仓", "qty": 10, "price": 333.26, "pnl": -2.24, "note": "初始建仓入场"}], "sharpe": -7.94, "sortino": -7.1, "calmar": null, "maxDD": 0.09, "winRate": null, "profitFactor": null, "nExits": 0, "days": 6}, {"key": "minervini", "name": "Minervini", "note": "基本面 · 趋势模板 · RS · 唐奇安", "equity": 20000.0, "ret": 0.0, "dayChg": 0.0, "cash": 20000.0, "frozen": 0.0, "mv": 0, "fees": 0.0, "realized": 0.0, "upnl": 0, "lastRun": "未运行", "curve": [20000.0, 20000.0, 20000.0, 20000.0, 20000.0, 20000.0], "positions": [], "trades": [], "sharpe": null, "sortino": null, "calmar": null, "maxDD": 0.0, "winRate": null, "profitFactor": null, "nExits": 0, "days": 6}]};
+const COLORS = { main: "var(--s-main)", aopen: "var(--s-aopen)", noyang: "var(--s-noyang)", novol: "var(--s-novol)", minervini: "var(--s-minervini)" };
 
 /* ==================== 多语言 ==================== */
 const I18N = {
@@ -217,6 +267,10 @@ const I18N = {
     chartH:"Cumulative Return", chartSub:(init,priced)=>`Initial $${init.toLocaleString()} · strategies · gray dashed = QQQ`+(priced?"":" · valued at cost (quotes unavailable)"),
     bench:"QQQ Benchmark", today:"Today", cash:"Cash", posVal:"Market Value", upnl:"Unreal. P&L",
     sharpe:"Sharpe", sortino:"Sortino", calmar:"Calmar", maxdd:"Max DD", winrate:"Win Rate", pf:"Profit Factor",
+    calH:"Daily P&L Calendar", calSub:"Color depth = size of the move · click a strategy to switch",
+    wd:["S","M","T","W","T","F","S"], calLoss:"Loss", calProfit:"Profit", calFlat:"Flat / no data",
+    calNone:"No daily P&L yet — appears once the strategy starts trading.",
+    calSum:(n,w,l,best,worst)=>`${n} active days · ${w} up / ${l} down · best ${best} · worst ${worst}`,
     sample:(d,e)=>`${d} trading days · ${e} closed`+(d<20?" · limited data, indicative only":""),
     posH:"Holdings", posSub:"Sorted by market value · P&L at latest close",
     trdH:"Recent Trades", trdSub:"Latest fills per strategy (new→old)",
@@ -226,16 +280,20 @@ const I18N = {
     posCols:["Code","Qty","Avg","Price","Value","P&L","P&L%","Stop","→Stop","Held"],
     trdCols:["Date","Code","Action","Qty","Price","Net P&L","Note"],
     days:d=>`${d}d`,
-    sName:{main:"Main",aopen:"A·Candle",noyang:"No-Streak",novol:"No-Volume"},
-    sNote:{main:"Full ruleset",aopen:"Candle-confirm entry",noyang:"Drop consecutive-up filter",novol:"Drop volume filter"},
+    sName:{main:"Main",aopen:"A·Candle",noyang:"No-Streak",novol:"No-Volume",minervini:"Minervini"},
+    sNote:{main:"Full ruleset",aopen:"Candle-confirm entry",noyang:"Drop consecutive-up filter",novol:"Drop volume filter",minervini:"Fundamentals · Trend Template · RS · Donchian"},
     act:a=>a.includes("加仓")?"Add":a.includes("减仓")?"Reduce":a.includes("出场")?"Exit":a.includes("买入")?"Open":a,
-    noteMap:[["初始建仓入场","Initial entry"],["趋势上行中途加仓","Add on uptrend"],["挂单补成交（次日确认）","pending fill (next-day)"],["挂单补成交（成交确认后记账）","pending fill (confirmed)"],["跌破 EMA20 生命线（含ATR缓冲）","broke EMA20 line (ATR buffer)"],["击穿物理低位防线","broke floor defense"],["尾仓跌破EMA20清仓（兜底）","tail exit below EMA20"],["主动锁利","lock profit"],["主动清仓","force exit"],["最高点","peak "],["触发线","trigger "],["收盘","close "],["跌破，清仓","→ exit"],["【中轴减仓】","[EMA-Reduce] "],["【绝对止损】","[Stop-Loss] "],["【移动止损】","[Trailing-Stop] "],["【美股波段止盈】","[Take-Profit] "],["【时间止损】","[Time-Stop] "],["【趋势终局】","[Trend-End] "]]
+    noteMap:[["初始建仓入场","Initial entry"],["趋势上行中途加仓","Add on uptrend"],["挂单补成交（次日确认）","pending fill (next-day)"],["挂单补成交（成交确认后记账）","pending fill (confirmed)"],["跌破 EMA20 生命线（含ATR缓冲）","broke EMA20 line (ATR buffer)"],["击穿物理低位防线","broke floor defense"],["尾仓跌破EMA20清仓（兜底）","tail exit below EMA20"],["主动锁利","lock profit"],["主动清仓","force exit"],["最高点","peak "],["触发线","trigger "],["收盘","close "],["跌破，清仓","→ exit"],["【中轴减仓】","[EMA-Reduce] "],["【绝对止损】","[Stop-Loss] "],["【保本止损】守住本金","[Breakeven-Stop] capital protected"],["【移动止损】","[Trailing-Stop] "],["【美股波段止盈】","[Take-Profit] "],["【时间止损】","[Time-Stop] "],["【趋势终局】","[Trend-End] "]]
   },
   ja: {
     title:"ペーパートレード · マルチ戦略ダッシュボード", updated:"更新",
     chartH:"累積リターン", chartSub:(init,priced)=>`元本 $${init.toLocaleString()} · 戦略 · 灰破線=QQQ`+(priced?"":" · 簿価評価（気配取得不可）"),
     bench:"QQQ ベンチマーク", today:"本日", cash:"現金", posVal:"評価額", upnl:"評価損益",
     sharpe:"シャープ", sortino:"ソルティノ", calmar:"カルマー", maxdd:"最大DD", winrate:"勝率", pf:"損益率",
+    calH:"日次損益カレンダー", calSub:"色の濃さ=変動の大きさ · 戦略をクリックで切替",
+    wd:["日","月","火","水","木","金","土"], calLoss:"損失", calProfit:"利益", calFlat:"変動なし",
+    calNone:"日次損益はまだありません — 取引開始後に表示されます。",
+    calSum:(n,w,l,best,worst)=>`${n}日 · 上昇${w}日 / 下落${l}日 · 最良 ${best} · 最悪 ${worst}`,
     sample:(d,e)=>`${d}営業日 · ${e}回決済`+(d<20?" · データ少・参考値":""),
     posH:"保有ポジション", posSub:"評価額順 · 損益は最新終値ベース",
     trdH:"最近の取引", trdSub:"戦略ごとの直近約定（新→旧）",
@@ -245,16 +303,20 @@ const I18N = {
     posCols:["銘柄","数量","平均","現在値","評価額","損益","損益%","損切","損切迄","保有"],
     trdCols:["日付","銘柄","アクション","数量","価格","純損益","備考"],
     days:d=>`${d}日`,
-    sName:{main:"メイン",aopen:"A·ローソク",noyang:"連陽除外",novol:"出来高除外"},
-    sNote:{main:"全ルール",aopen:"ローソク確認エントリー",noyang:"連陽フィルタ除外",novol:"出来高フィルタ除外"},
+    sName:{main:"メイン",aopen:"A·ローソク",noyang:"連陽除外",novol:"出来高除外",minervini:"ミネルヴィニ"},
+    sNote:{main:"全ルール",aopen:"ローソク確認エントリー",noyang:"連陽フィルタ除外",novol:"出来高フィルタ除外",minervini:"ファンダ · トレンドテンプレート · RS · ドンチャン"},
     act:a=>a.includes("加仓")?"増し玉":a.includes("减仓")?"一部決済":a.includes("出场")?"全決済":a.includes("买入")?"新規":a,
-    noteMap:[["初始建仓入场","新規建玉"],["趋势上行中途加仓","上昇途中の増し玉"],["挂单补成交（次日确认）","約定確認（翌日）"],["挂单补成交（成交确认后记账）","約定確認"],["跌破 EMA20 生命线（含ATR缓冲）","EMA20割れ（ATRバッファ）"],["击穿物理低位防线","下値ライン割れ"],["尾仓跌破EMA20清仓（兜底）","EMA20割れで残玉決済"],["主动锁利","利確"],["主动清仓","強制決済"],["最高点","高値 "],["触发线","トリガー "],["收盘","終値 "],["跌破，清仓","→決済"],["【中轴减仓】","[中軸減玉] "],["【绝对止损】","[損切] "],["【移动止损】","[トレール] "],["【美股波段止盈】","[利確] "],["【时间止损】","[時間切れ] "],["【趋势终局】","[トレンド終了] "]]
+    noteMap:[["初始建仓入场","新規建玉"],["趋势上行中途加仓","上昇途中の増し玉"],["挂单补成交（次日确认）","約定確認（翌日）"],["挂单补成交（成交确认后记账）","約定確認"],["跌破 EMA20 生命线（含ATR缓冲）","EMA20割れ（ATRバッファ）"],["击穿物理低位防线","下値ライン割れ"],["尾仓跌破EMA20清仓（兜底）","EMA20割れで残玉決済"],["主动锁利","利確"],["主动清仓","強制決済"],["最高点","高値 "],["触发线","トリガー "],["收盘","終値 "],["跌破，清仓","→決済"],["【中轴减仓】","[中軸減玉] "],["【绝对止损】","[損切] "],["【保本止损】守住本金","[保本] 元本を確保"],["【移动止损】","[トレール] "],["【美股波段止盈】","[利確] "],["【时间止损】","[時間切れ] "],["【趋势终局】","[トレンド終了] "]]
   },
   zh: {
     title:"模拟盘 · 多策略收益看板", updated:"更新于",
     chartH:"累计收益率", chartSub:(init,priced)=>`起始本金 $${init.toLocaleString()} · 策略 · 灰色虚线为 QQQ 同期`+(priced?"":" · 本次按成本估值（行情源不可用）"),
     bench:"QQQ 基准", today:"今日", cash:"现金", posVal:"持仓市值", upnl:"浮动盈亏",
     sharpe:"夏普", sortino:"索提诺", calmar:"卡玛", maxdd:"最大回撤", winrate:"胜率", pf:"利润因子",
+    calH:"每日盈亏日历", calSub:"颜色深浅=当日盈亏幅度 · 点击可切换策略",
+    wd:["日","一","二","三","四","五","六"], calLoss:"亏损", calProfit:"盈利", calFlat:"无变动",
+    calNone:"暂无每日盈亏 — 策略开始交易后自动出现。",
+    calSum:(n,w,l,best,worst)=>`${n} 个有波动的交易日 · 盈利${w}天 / 亏损${l}天 · 最好 ${best} · 最差 ${worst}`,
     sample:(d,e)=>`样本 ${d} 交易日 · ${e} 笔了结`+(d<20?" · 数据尚少，指标仅供参考":""),
     posH:"持仓明细", posSub:"按市值排序 · 浮动盈亏基于最新收盘价",
     trdH:"最近交易", trdSub:"每个策略最近的成交记录（新→旧）",
@@ -264,8 +326,8 @@ const I18N = {
     posCols:["代码","股数","均价","现价","市值","浮动盈亏","盈亏%","止损价","距止损","持仓"],
     trdCols:["日期","代码","动作","股数","价格","净盈亏","说明"],
     days:d=>`${d}天`,
-    sName:{main:"主策略",aopen:"A·K线开",noyang:"删连阳",novol:"删放量"},
-    sNote:{main:"波段突破 · 完整规则",aopen:"对照组 · K线确认开仓",noyang:"对照组 · 删除连阳过滤",novol:"对照组 · 删除放量过滤"},
+    sName:{main:"主策略",aopen:"A·K线开",noyang:"删连阳",novol:"删放量",minervini:"Minervini"},
+    sNote:{main:"波段突破 · 完整规则",aopen:"对照组 · K线确认开仓",noyang:"对照组 · 删除连阳过滤",novol:"对照组 · 删除放量过滤",minervini:"基本面 · 趋势模板 · RS · 唐奇安"},
     act:a=>a
   }
 };
@@ -293,6 +355,8 @@ function applyStatic() {
   document.getElementById("stamp").textContent = t.updated + " " + DATA.generated;
   document.getElementById("chart-h2").textContent = t.chartH;
   document.getElementById("chart-sub").textContent = t.chartSub(DATA.initial, DATA.priced);
+  document.getElementById("cal-h2").textContent = t.calH;
+  document.getElementById("cal-sub").textContent = t.calSub;
   document.getElementById("pos-h2").textContent = t.posH;
   document.getElementById("pos-sub").textContent = t.posSub;
   document.getElementById("trd-h2").textContent = t.trdH;
@@ -491,12 +555,91 @@ function renderTrades() {
   });
 }
 
+/* ---------- 每日盈亏日历 ---------- */
+let calKey = null;
+function renderCalendar() {
+  const t = T();
+  if (!calKey || !DATA.strategies.some(s => s.key === calKey))
+    calKey = DATA.strategies.length ? DATA.strategies[0].key : null;
+
+  /* 策略切换按钮 */
+  const sw = document.getElementById("cal-switch"); sw.innerHTML = "";
+  DATA.strategies.forEach(s => {
+    const b = document.createElement("button");
+    b.className = (s.key === calKey) ? "active" : "";
+    b.innerHTML = `<i style="background:${COLORS[s.key]}"></i>${sName(s)}`;
+    b.addEventListener("click", () => { calKey = s.key; renderCalendar(); });
+    sw.appendChild(b);
+  });
+
+  const box = document.getElementById("cal-months");
+  const sumEl = document.getElementById("cal-sum");
+  const legEl = document.getElementById("cal-legend");
+  const s = DATA.strategies.find(x => x.key === calKey);
+  if (!s) { box.innerHTML = ""; return; }
+
+  /* 每日盈亏 = 当日权益 − 前一日权益（权益曲线已含浮动盈亏） */
+  const dates = DATA.dates, eq = s.curve, pnl = {};
+  for (let i = 1; i < dates.length; i++) {
+    if (eq[i] != null && eq[i-1] != null && eq[i-1] !== 0)
+      pnl[dates[i]] = { v: eq[i] - eq[i-1], p: (eq[i] / eq[i-1] - 1) * 100 };
+  }
+  const vals = Object.values(pnl).map(o => o.v).filter(v => Math.abs(v) > 0.005);
+  if (!vals.length) {
+    box.innerHTML = `<p class="empty">${t.calNone}</p>`;
+    sumEl.textContent = ""; legEl.innerHTML = ""; return;
+  }
+  const maxAbs = Math.max(...vals.map(Math.abs));
+
+  /* 按月分组渲染 */
+  const months = {};
+  Object.keys(pnl).forEach(d => { const m = d.slice(0, 7); (months[m] = months[m] || []).push(d); });
+  box.innerHTML = "";
+  Object.keys(months).sort().forEach(m => {
+    const y = +m.slice(0, 4), mo = +m.slice(5, 7);
+    const firstDow = new Date(y, mo - 1, 1).getDay();
+    const nDays = new Date(y, mo, 0).getDate();
+    let html = `<div class="cal-month"><div class="cal-title">${m}</div><div class="cal-grid">`;
+    t.wd.forEach(w => html += `<div class="wd">${w}</div>`);
+    for (let i = 0; i < firstDow; i++) html += `<div class="cal-cell empty"></div>`;
+    for (let d = 1; d <= nDays; d++) {
+      const ds = `${y}-${String(mo).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+      const o = pnl[ds];
+      if (!o || Math.abs(o.v) <= 0.005) {
+        html += `<div class="cal-cell"><span class="d">${d}</span></div>`; continue;
+      }
+      const a = Math.min(1, 0.25 + Math.abs(o.v) / maxAbs * 0.75);   // 颜色深浅=盈亏幅度
+      const bg = o.v > 0 ? `rgba(85,118,74,${a})` : `rgba(166,88,71,${a})`;
+      const sg = o.v > 0 ? "+" : "";
+      /* 金额过千去掉小数，避免撑破格子 */
+      const amt = Math.abs(o.v) >= 1000 ? o.v.toFixed(0) : o.v.toFixed(2);
+      const tip = `${ds}\n${sg}${o.v.toFixed(2)} USD (${o.p > 0 ? "+" : ""}${o.p.toFixed(2)}%)`;
+      html += `<div class="cal-cell has" style="background:${bg}" title="${tip}">`
+            + `<span class="d">${d}</span>`
+            + `<span class="v">${sg}${amt}</span>`
+            + `<span class="p">${o.p > 0 ? "+" : ""}${o.p.toFixed(2)}%</span></div>`;
+    }
+    box.insertAdjacentHTML("beforeend", html + `</div></div>`);
+  });
+
+  const wins = vals.filter(v => v > 0), loss = vals.filter(v => v < 0);
+  /* 带符号金额：全亏时 best 也是负数，不能由文案硬拼 "+$"，否则出现 "+$-18.00" */
+  const fmtSigned = v => (v >= 0 ? "+$" : "-$") + fmtUsd(Math.abs(v));
+  sumEl.innerHTML = t.calSum(vals.length, wins.length, loss.length,
+                             fmtSigned(Math.max(...vals)), fmtSigned(Math.min(...vals)));
+  legEl.innerHTML =
+    `<i style="background:rgba(166,88,71,.9)"></i>${t.calLoss}` +
+    `<i style="background:var(--grid);margin-left:12px"></i>${t.calFlat}` +
+    `<i style="background:rgba(85,118,74,.9);margin-left:12px"></i>${t.calProfit}`;
+}
+
 /* ---------- 渲染全部 + 语言切换 ---------- */
 function renderAll() {
   applyStatic();
   renderTiles();
   renderLegend();
   drawChart();
+  renderCalendar();
   renderPositions();
   renderTrades();
 }
