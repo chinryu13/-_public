@@ -19,8 +19,6 @@
     --s-aopen: #4C70A0;   /* A·K线开 · 蓝灰 */
     --s-noyang:#A6612F;   /* 删连阳 · 赤陶 */
     --s-novol: #8A5B7C;   /* 删放量 · 梅紫 */
-    --s-bollinger:#2A6F97;/* 布林带 · 靛蓝 */
-    --s-rsmomentum:#A67C00;/* RS动量 · 深金 */
     --s-macross:#5B8C5A;   /* MA金叉 · 苔绿 */
     --bench:   #ADA495;   /* 基准 · 暖灰 */
     --up:      #55764A;
@@ -259,8 +257,8 @@
 </div>
 
 <script>
-const DATA = {"generated": "2026-08-04 22:24", "initial": 20000.0, "priced": true, "dates": [], "bench": [], "strategies": [{"key": "main", "name": "主策略", "note": "波段突破 · 完整规则", "equity": 20000.0, "ret": 0.0, "dayChg": null, "cash": 20000.0, "frozen": 3509.12, "mv": 0, "fees": 0.0, "realized": 0.0, "upnl": 0, "lastRun": "2026-08-04 20:00:15", "curve": [], "positions": [], "trades": [], "sharpe": null, "sortino": null, "calmar": null, "maxDD": 0.0, "winRate": null, "profitFactor": null, "nExits": 0, "days": 0}, {"key": "aopen", "name": "A·K线开", "note": "对照组 · K线确认开仓", "equity": 20000.0, "ret": 0.0, "dayChg": null, "cash": 20000.0, "frozen": 0.0, "mv": 0, "fees": 0.0, "realized": 0.0, "upnl": 0, "lastRun": "2026-08-04 20:30:06", "curve": [], "positions": [], "trades": [], "sharpe": null, "sortino": null, "calmar": null, "maxDD": 0.0, "winRate": null, "profitFactor": null, "nExits": 0, "days": 0}, {"key": "noyang", "name": "删连阳", "note": "对照组 · 删除连阳过滤", "equity": 20000.0, "ret": 0.0, "dayChg": null, "cash": 20000.0, "frozen": 3502.56, "mv": 0, "fees": 0.0, "realized": 0.0, "upnl": 0, "lastRun": "2026-08-04 19:45:12", "curve": [], "positions": [], "trades": [], "sharpe": null, "sortino": null, "calmar": null, "maxDD": 0.0, "winRate": null, "profitFactor": null, "nExits": 0, "days": 0}, {"key": "novol", "name": "删放量", "note": "对照组 · 删除放量过滤", "equity": 20000.0, "ret": 0.0, "dayChg": null, "cash": 20000.0, "frozen": 0.0, "mv": 0, "fees": 0.0, "realized": 0.0, "upnl": 0, "lastRun": "未运行", "curve": [], "positions": [], "trades": [], "sharpe": null, "sortino": null, "calmar": null, "maxDD": 0.0, "winRate": null, "profitFactor": null, "nExits": 0, "days": 0}, {"key": "bollinger", "name": "布林带", "note": "挤压突破 · 三层出场 · 不分批止盈", "equity": 20000.0, "ret": 0.0, "dayChg": null, "cash": 20000.0, "frozen": 0.0, "mv": 0, "fees": 0.0, "realized": 0.0, "upnl": 0, "lastRun": "未运行", "curve": [], "positions": [], "trades": [], "sharpe": null, "sortino": null, "calmar": null, "maxDD": 0.0, "winRate": null, "profitFactor": null, "nExits": 0, "days": 0}, {"key": "rsmomentum", "name": "RS动量", "note": "相对强弱+趋势模板 · IBD/Minervini风格", "equity": 20000.0, "ret": 0.0, "dayChg": null, "cash": 20000.0, "frozen": 0.0, "mv": 0, "fees": 0.0, "realized": 0.0, "upnl": 0, "lastRun": "未运行", "curve": [], "positions": [], "trades": [], "sharpe": null, "sortino": null, "calmar": null, "maxDD": 0.0, "winRate": null, "profitFactor": null, "nExits": 0, "days": 0}, {"key": "macross", "name": "MA金叉", "note": "MA5/10/20金叉+回踩 · 热榜池+基本面过滤 · 跌破MA20出场", "equity": 20000.0, "ret": 0.0, "dayChg": null, "cash": 20000.0, "frozen": 0.0, "mv": 0, "fees": 0.0, "realized": 0.0, "upnl": 0, "lastRun": "未运行", "curve": [], "positions": [], "trades": [], "sharpe": null, "sortino": null, "calmar": null, "maxDD": 0.0, "winRate": null, "profitFactor": null, "nExits": 0, "days": 0}]};
-const COLORS = { main: "var(--s-main)", aopen: "var(--s-aopen)", noyang: "var(--s-noyang)", novol: "var(--s-novol)", bollinger: "var(--s-bollinger)", rsmomentum: "var(--s-rsmomentum)", macross: "var(--s-macross)" };
+const DATA = {"generated": "2026-08-05 22:00", "initial": 20000.0, "priced": true, "dates": [], "bench": [], "strategies": [{"key": "main", "name": "主策略", "note": "波段突破 · 完整规则", "equity": 20000.0, "ret": 0.0, "dayChg": null, "cash": 20000.0, "frozen": 3509.12, "mv": 0, "fees": 0.0, "realized": 0.0, "upnl": 0, "lastRun": "2026-08-05 20:00:05", "curve": [], "positions": [], "trades": [], "sharpe": null, "sortino": null, "calmar": null, "maxDD": 0.0, "winRate": null, "profitFactor": null, "nExits": 0, "days": 0}, {"key": "aopen", "name": "A·K线开", "note": "对照组 · K线确认开仓", "equity": 20000.0, "ret": 0.0, "dayChg": null, "cash": 20000.0, "frozen": 0.0, "mv": 0, "fees": 0.0, "realized": 0.0, "upnl": 0, "lastRun": "2026-08-05 20:30:04", "curve": [], "positions": [], "trades": [], "sharpe": null, "sortino": null, "calmar": null, "maxDD": 0.0, "winRate": null, "profitFactor": null, "nExits": 0, "days": 0}, {"key": "noyang", "name": "删连阳", "note": "对照组 · 删除连阳过滤", "equity": 20000.0, "ret": 0.0, "dayChg": null, "cash": 20000.0, "frozen": 0.0, "mv": 0, "fees": 0.0, "realized": 0.0, "upnl": 0, "lastRun": "nan", "curve": [], "positions": [], "trades": [], "sharpe": null, "sortino": null, "calmar": null, "maxDD": 0.0, "winRate": null, "profitFactor": null, "nExits": 0, "days": 0}, {"key": "novol", "name": "删放量", "note": "对照组 · 删除放量过滤", "equity": 20000.0, "ret": 0.0, "dayChg": null, "cash": 20000.0, "frozen": 0.0, "mv": 0, "fees": 0.0, "realized": 0.0, "upnl": 0, "lastRun": "未运行", "curve": [], "positions": [], "trades": [], "sharpe": null, "sortino": null, "calmar": null, "maxDD": 0.0, "winRate": null, "profitFactor": null, "nExits": 0, "days": 0}, {"key": "macross", "name": "MA金叉", "note": "MA5/10/20金叉+回踩 · 热榜池+基本面过滤 · 跌破MA20出场", "equity": 20000.0, "ret": 0.0, "dayChg": null, "cash": 20000.0, "frozen": 0.0, "mv": 0, "fees": 0.0, "realized": 0.0, "upnl": 0, "lastRun": "未运行", "curve": [], "positions": [], "trades": [], "sharpe": null, "sortino": null, "calmar": null, "maxDD": 0.0, "winRate": null, "profitFactor": null, "nExits": 0, "days": 0}]};
+const COLORS = { main: "var(--s-main)", aopen: "var(--s-aopen)", noyang: "var(--s-noyang)", novol: "var(--s-novol)", macross: "var(--s-macross)" };
 
 /* ==================== 多语言 ==================== */
 const I18N = {
@@ -282,8 +280,8 @@ const I18N = {
     posCols:["Code","Qty","Avg","Price","Value","P&L","P&L%","Stop","→Stop","Held"],
     trdCols:["Date","Code","Action","Qty","Price","Net P&L","Note"],
     days:d=>`${d}d`,
-    sName:{main:"Main",aopen:"A·Candle",noyang:"No-Streak",novol:"No-Volume",bollinger:"Bollinger",rsmomentum:"RS Momentum",macross:"MA Cross"},
-    sNote:{main:"Full ruleset",aopen:"Candle-confirm entry",noyang:"Drop consecutive-up filter",novol:"Drop volume filter",bollinger:"Squeeze breakout · 3-tier exit · no scale-out",rsmomentum:"Relative strength + Trend Template · IBD/Minervini style",macross:"MA5/10/20 golden cross + pullback · hot-list pool + fundamentals · exit below MA20"},
+    sName:{main:"Main",aopen:"A·Candle",noyang:"No-Streak",novol:"No-Volume",macross:"MA Cross"},
+    sNote:{main:"Full ruleset",aopen:"Candle-confirm entry",noyang:"Drop consecutive-up filter",novol:"Drop volume filter",macross:"MA5/10/20 golden cross + pullback · hot-list pool + fundamentals · exit below MA20"},
     act:a=>a.includes("加仓")?"Add":a.includes("减仓")?"Reduce":a.includes("出场")?"Exit":a.includes("买入")?"Open":a,
     noteMap:[["初始建仓入场","Initial entry"],["趋势上行中途加仓","Add on uptrend"],["挂单补成交（次日确认）","pending fill (next-day)"],["挂单补成交（成交确认后记账）","pending fill (confirmed)"],["跌破 EMA20 生命线（含ATR缓冲）","broke EMA20 line (ATR buffer)"],["击穿物理低位防线","broke floor defense"],["尾仓跌破EMA20清仓（兜底）","tail exit below EMA20"],["主动锁利","lock profit"],["主动清仓","force exit"],["最高点","peak "],["触发线","trigger "],["收盘","close "],["跌破，清仓","→ exit"],["【中轴减仓】","[EMA-Reduce] "],["【绝对止损】","[Stop-Loss] "],["【保本止损】守住本金","[Breakeven-Stop] capital protected"],["【移动止损】","[Trailing-Stop] "],["【美股波段止盈】","[Take-Profit] "],["【时间止损】","[Time-Stop] "],["【趋势终局】","[Trend-End] "],["【趋势出场】","[Trend-Exit] "],["挤压突破入场","Squeeze breakout entry"],["【趋势破坏】","[Trend-Break] "],["趋势模板达标入场","Trend template qualified entry"]]
   },
@@ -305,8 +303,8 @@ const I18N = {
     posCols:["銘柄","数量","平均","現在値","評価額","損益","損益%","損切","損切迄","保有"],
     trdCols:["日付","銘柄","アクション","数量","価格","純損益","備考"],
     days:d=>`${d}日`,
-    sName:{main:"メイン",aopen:"A·ローソク",noyang:"連陽除外",novol:"出来高除外",bollinger:"ボリンジャー",rsmomentum:"RSモメンタム",macross:"MAゴールデンクロス"},
-    sNote:{main:"全ルール",aopen:"ローソク確認エントリー",noyang:"連陽フィルタ除外",novol:"出来高フィルタ除外",bollinger:"スクイーズ・ブレイクアウト · 3段階決済 · 分割利確なし",rsmomentum:"相対強度+トレンドテンプレート · IBD/ミネルヴィニ式",macross:"MA5/10/20ゴールデンクロス+押し目 · 話題株プール+ファンダ · MA20割れで決済"},
+    sName:{main:"メイン",aopen:"A·ローソク",noyang:"連陽除外",novol:"出来高除外",macross:"MAゴールデンクロス"},
+    sNote:{main:"全ルール",aopen:"ローソク確認エントリー",noyang:"連陽フィルタ除外",novol:"出来高フィルタ除外",macross:"MA5/10/20ゴールデンクロス+押し目 · 話題株プール+ファンダ · MA20割れで決済"},
     act:a=>a.includes("加仓")?"増し玉":a.includes("减仓")?"一部決済":a.includes("出场")?"全決済":a.includes("买入")?"新規":a,
     noteMap:[["初始建仓入场","新規建玉"],["趋势上行中途加仓","上昇途中の増し玉"],["挂单补成交（次日确认）","約定確認（翌日）"],["挂单补成交（成交确认后记账）","約定確認"],["跌破 EMA20 生命线（含ATR缓冲）","EMA20割れ（ATRバッファ）"],["击穿物理低位防线","下値ライン割れ"],["尾仓跌破EMA20清仓（兜底）","EMA20割れで残玉決済"],["主动锁利","利確"],["主动清仓","強制決済"],["最高点","高値 "],["触发线","トリガー "],["收盘","終値 "],["跌破，清仓","→決済"],["【中轴减仓】","[中軸減玉] "],["【绝对止损】","[損切] "],["【保本止损】守住本金","[保本] 元本を確保"],["【移动止损】","[トレール] "],["【美股波段止盈】","[利確] "],["【时间止损】","[時間切れ] "],["【趋势终局】","[トレンド終了] "],["【趋势出场】","[トレンド抜け] "],["挤压突破入场","スクイーズ・ブレイクアウト建玉"],["【趋势破坏】","[トレンド崩壊] "],["趋势模板达标入场","トレンドテンプレート合致建玉"]]
   },
@@ -328,8 +326,8 @@ const I18N = {
     posCols:["代码","股数","均价","现价","市值","浮动盈亏","盈亏%","止损价","距止损","持仓"],
     trdCols:["日期","代码","动作","股数","价格","净盈亏","说明"],
     days:d=>`${d}天`,
-    sName:{main:"主策略",aopen:"A·K线开",noyang:"删连阳",novol:"删放量",bollinger:"布林带",rsmomentum:"RS动量",macross:"MA金叉"},
-    sNote:{main:"波段突破 · 完整规则",aopen:"对照组 · K线确认开仓",noyang:"对照组 · 删除连阳过滤",novol:"对照组 · 删除放量过滤",bollinger:"挤压突破 · 三层出场 · 不分批止盈",rsmomentum:"相对强弱+趋势模板 · IBD/Minervini风格",macross:"MA5/10/20金叉+回踩 · 热榜池+基本面过滤 · 跌破MA20出场"},
+    sName:{main:"主策略",aopen:"A·K线开",noyang:"删连阳",novol:"删放量",macross:"MA金叉"},
+    sNote:{main:"波段突破 · 完整规则",aopen:"对照组 · K线确认开仓",noyang:"对照组 · 删除连阳过滤",novol:"对照组 · 删除放量过滤",macross:"MA5/10/20金叉+回踩 · 热榜池+基本面过滤 · 跌破MA20出场"},
     act:a=>a
   }
 };
